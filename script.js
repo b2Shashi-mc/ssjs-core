@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // List of SOAP API objects
 const sfmcObjects = ['Account', 'AccountUser', 'AccountTracking', 
-                    'Click', 'DataExtension','FilterDefinition',
-                    'Folder','HardBounce','Open',
-                    'QueryDefinition','Subscriber','Unsubscribe'];
+                    'Click', 'DataExtension', 'FilterDefinition',
+                    'Folder', 'HardBounce', 'Open',
+                    'QueryDefinition', 'Subscriber', 'Unsubscribe'];
 
 // Function to populate the object list
 function populateObjectList() {
@@ -18,19 +18,27 @@ function populateObjectList() {
             <input type="radio" name="sfmcObject" value="${obj}" id="${obj}">
             <label for="${obj}">${obj}</label>
         `;
-        listItem.addEventListener('click', () => selectItem(listItem, obj));
         listContainer.appendChild(listItem);
+    });
+
+    // Add event listener for radio buttons directly
+    document.querySelectorAll('input[name="sfmcObject"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const selectedObject = e.target.value;
+            selectItem(selectedObject);
+        });
     });
 }
 
 // Function to handle item selection
-function selectItem(item, objectName) {
+function selectItem(objectName) {
     // Remove 'selected' class from all items
     const allItems = document.querySelectorAll('.list-item');
     allItems.forEach(i => i.classList.remove('selected'));
 
-    // Add 'selected' class to the clicked item
-    item.classList.add('selected');
+    // Add 'selected' class to the corresponding item
+    const selectedItem = document.getElementById(objectName);
+    selectedItem.closest('.list-item').classList.add('selected');
 
     // Update button text
     const button = document.getElementById('generate-code');
@@ -61,7 +69,7 @@ function copyToClipboard(text) {
         const modal = document.getElementById("copyModal");
         modal.classList.add("show");
 
-        // After 3 seconds, fade out the modal
+        // After 2 seconds, fade out the modal
         setTimeout(() => {
             modal.classList.remove("show");
         }, 2000); // 2 seconds
