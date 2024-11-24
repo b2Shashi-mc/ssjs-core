@@ -1,0 +1,66 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  // Load the Core library with version 1
+  Platform.Load("Core", "1");
+
+  // Function to log errors
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  // Function to retrieve Subscriber details by SubscriberKey
+  function retrieveSubscriber(subscriberKey) {
+    try {
+      var filter = {
+        Property: "SubscriberKey",
+        SimpleOperator: "equals",
+        Value: subscriberKey
+      };
+
+      // Attempt to retrieve the Subscriber(s)
+      var results = Subscriber.Retrieve(filter);
+
+      // Return the results if found
+      return results;
+    } catch (ex) {
+      logError("Error retrieving Subscriber for SubscriberKey: " + subscriberKey, ex);
+      return null;
+    }
+  }
+
+  // Function to display Subscriber details
+  function displaySubscriberDetails(subscribers) {
+    if (subscribers && subscribers.length > 0) {
+      for (var i = 0; i < subscribers.length; i++) {
+        Write("Subscriber Key: " + subscribers[i].SubscriberKey + '\n');
+        Write("Email Address: " + subscribers[i].EmailAddress + '\n');
+        Write("Status: " + subscribers[i].Status + '\n');
+        Write("CreatedDate: " + subscribers[i].CreatedDate + '\n');
+        Write("ModifiedDate: " + subscribers[i].ModifiedDate + '\n');
+        Write("CustomerKey: " + subscribers[i].CustomerKey + '\n');
+        Write("Status: " + subscribers[i].Status + '\n');
+        Write("UnsubscribedDate: " + subscribers[i].UnsubscribedDate + '\n');
+        Write("-------------------------------\n");
+      }
+    } else {
+      Write("No Subscriber found for the specified SubscriberKey.\n");
+    }
+  }
+
+  // Main execution flow
+  try {
+    // Define the SubscriberKey (can be static or dynamically provided)
+    var subscriberKey = "example-subscriber-key"; // Replace with your target SubscriberKey
+
+    // Retrieve Subscriber details
+    var subscribers = retrieveSubscriber(subscriberKey);
+
+    // Display Subscriber details if retrieved
+    displaySubscriberDetails(subscribers);
+  } catch (ex) {
+    // Handle any unexpected errors
+    logError("Unexpected error during execution", ex);
+  }
+</script>

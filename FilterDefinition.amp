@@ -1,0 +1,64 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  // Function to log errors
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  // Function to retrieve FilterDefinition by CustomerKey
+  function retrieveFilterDefinition(customerKey) {
+    try {
+      var filter = {
+        Property: "CustomerKey",
+        SimpleOperator: "equals",
+        Value: customerKey
+      };
+
+      // Attempt to retrieve the FilterDefinition(s)
+      var results = FilterDefinition.Retrieve(filter);
+
+      // Return the results if found
+      return results;
+    } catch (ex) {
+      logError("Error retrieving FilterDefinition for CustomerKey: " + customerKey, ex);
+      return null;
+    }
+  }
+
+  // Function to display FilterDefinition details
+  function displayFilterDefinitionDetails(filterDefinitions) {
+    if (filterDefinitions && filterDefinitions.length > 0) {
+      for (var i = 0; i < filterDefinitions.length; i++) {
+        Write("Name: " + filterDefinitions[i].Name + '\n');
+        Write("CustomerKey: " + filterDefinitions[i].CustomerKey + '\n');
+        Write("Description: " + filterDefinitions[i].Description + '\n');
+        Write("CreatedDate: " + filterDefinitions[i].CreatedDate + '\n');
+        Write("ModifiedDate: " + filterDefinitions[i].ModifiedDate + '\n');
+        Write("CategoryID: " + filterDefinitions[i].CategoryID + '\n');
+        Write("FilterDefinitionType: " + filterDefinitions[i].DataFilter + '\n');
+        Write("-------------------------------\n");
+      }
+    } else {
+      Write("No FilterDefinition found for the specified CustomerKey.\n");
+    }
+  }
+
+  // Main execution flow
+  try {
+    // Define the FilterDefinition CustomerKey (can be static or dynamically provided)
+    var customerKey = "Example1"; // Replace with the target FilterDefinition's CustomerKey
+
+    // Retrieve FilterDefinition details
+    var filterDefinitions = retrieveFilterDefinition(customerKey);
+
+    // Display FilterDefinition details if retrieved
+    displayFilterDefinitionDetails(filterDefinitions);
+  } catch (ex) {
+    // Handle any unexpected errors
+    logError("Unexpected error during execution", ex);
+  }
+</script>

@@ -1,0 +1,71 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  // Load the Core library with version 1
+  Platform.Load("Core", "1");
+
+  // Function to log errors
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  // Function to retrieve Data Extension details by CustomerKey
+  function retrieveDataExtension(customerKey) {
+    try {
+      var filter = {
+        QueryAllAccounts: true,
+        Filter: {
+          Property: "CustomerKey",
+          SimpleOperator: "equals",
+          Value: customerKey
+        }
+      };
+
+      // Attempt to retrieve the Data Extension(s)
+      var results = DataExtension.Retrieve(filter);
+
+      // Return the results if found
+      return results;
+    } catch (ex) {
+      // Log any errors during retrieval
+      logError("Error retrieving Data Extension for CustomerKey: " + customerKey, ex);
+      return null;
+    }
+  }
+
+  // Function to display Data Extension details
+  function displayDataExtensionDetails(dataExtension) {
+    if (dataExtension && dataExtension.length > 0) {
+      Write("Name: " + dataExtension[0].Name + '\n');
+      Write("Description: " + dataExtension[0].Description + '\n');
+      Write("IsSendable: " + dataExtension[0].IsSendable + '\n');
+      Write("IsTestable: " + dataExtension[0].IsTestable + '\n');
+      Write("CategoryID: " + dataExtension[0].CategoryID + '\n');
+      Write("IsPlatformObject: " + dataExtension[0].IsPlatformObject + '\n');
+      Write("CustomerKey: " + dataExtension[0].CustomerKey + '\n');
+      Write("CreatedDate: " + dataExtension[0].CreatedDate + '\n');
+      Write("ModifiedDate: " + dataExtension[0].ModifiedDate + '\n');
+      Write("ObjectID: " + dataExtension[0].ObjectID + '\n');
+      Write("Status: " + dataExtension[0].Status + '\n');
+      Write("Client ID: " + dataExtension[0].Client.ID + '\n');
+    } else {
+      Write("No Data Extension found for the specified CustomerKey.\n");
+    }
+  }
+
+  // Main execution flow
+  try {
+    // Define the Data Extension CustomerKey (can be static or dynamically provided)
+    var customerKey = "Dataview_Sent"; // Replace with your target Data Extension CustomerKey
+
+    // Retrieve Data Extension details
+    var dataExtensionDetails = retrieveDataExtension(customerKey);
+
+    // Display Data Extension details if retrieved
+    displayDataExtensionDetails(dataExtensionDetails);
+  } catch (ex) {
+    // Handle any unexpected errors
+    logError("Unexpected error during execution", ex);
+  }
+</script>

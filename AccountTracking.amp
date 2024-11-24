@@ -1,0 +1,82 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  // Load the Core library with version 1
+  Platform.Load("Core", "1");
+
+  // Function to log error details for easier debugging
+  function LogError(message, error) {
+    Write("Error Message: " + message + '\n');
+    Write("Error Description: " + error.description + '\n');
+  }
+
+  // Function to retrieve tracking data for an account by CustomerKey
+  function retrieveAccountTracking(customerKey) {
+    try {
+      var filter = { 
+        Property: "CustomerKey",
+        SimpleOperator: "equals",
+        Value: customerKey
+      };
+
+      // Attempt to retrieve tracking information for the specified account
+      return Account.Tracking.Retrieve(filter);
+    } catch (ex) {
+      // Log any exceptions during the retrieval process
+      LogError("Error retrieving account tracking information for CustomerKey: " + customerKey, ex);
+      return null; // Return null if there was an error
+    }
+  }
+
+  // Function to display tracking information in a readable format
+  function displayTrackingInfo(trackingData) {
+    if (trackingData && trackingData.length > 0) {
+      Write('\n\nTracking information about the account:\n\n');
+      for (var i = 0; i < trackingData.length; i++) {
+        var data = trackingData[i];
+        
+        // Output Sends information
+        Write("Sends:\n");
+        Write("\t\tTotal: " + data.Sends.Total + "\n");
+
+        // Output Bounces information
+        Write("Bounces:\n");
+        Write("\t\tTotal: " + data.Bounces.Total + "\n");
+        Write("\t\tHardBounces: " + data.Bounces.HardBounces + "\n");
+        Write("\t\tSoftBounces: " + data.Bounces.SoftBounces + "\n");
+        Write("\t\tBlockBounces: " + data.Bounces.BlockBounces + "\n");
+        Write("\t\tTechnicalBounces: " + data.Bounces.TechnicalBounces + "\n");
+        Write("\t\tUnknownBounces: " + data.Bounces.UnknownBounces + "\n");
+
+        // Output Clicks information
+        Write("Clicks:\n");
+        Write("\t\tTotal: " + data.Clicks.Total + "\n");
+        Write("\t\tUnique: " + data.Clicks.Unique + "\n");
+
+        // Output Opens information
+        Write("Opens:\n");
+        Write("\t\tTotal: " + data.Opens.Total + "\n");
+        Write("\t\tUnique: " + data.Opens.Unique + "\n");
+
+        // Output Unsubscribes information
+        Write("Unsubscribes:\n");
+        Write("\t\tUnique: " + data.Unsubscribes.Unique + "\n");
+      }
+    } else {
+      Write("No tracking information found for the specified CustomerKey.\n");
+    }
+  }
+
+  // Main execution block
+  try {
+    // Define the CustomerKey (This could be dynamic or passed as a parameter)
+    var customerKey = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx";
+
+    // Retrieve the account tracking data
+    var trackingData = retrieveAccountTracking(customerKey);
+
+    // Display the tracking information if available
+    displayTrackingInfo(trackingData);
+  } catch (ex) {
+    // Catch any unexpected errors and log them
+    LogError("Unexpected error", ex);
+  }
+</script>

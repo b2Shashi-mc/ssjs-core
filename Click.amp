@@ -1,0 +1,47 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  function retrieveClickEvents(subscriberKey) {
+    try {
+      var filter = {
+        Property: "SubscriberKey",
+        SimpleOperator: "equals",
+        Value: subscriberKey
+      };
+
+      var results = Click.Retrieve(filter);
+
+      return results;
+    } catch (ex) {
+      logError("Error retrieving Click Events for SubscriberKey: " + subscriberKey, ex);
+      return null;
+    }
+  }
+
+  function displayClickEvents(clickEvents) {
+    if (clickEvents && clickEvents.length > 0) {
+      for (var i = 0; i < clickEvents.length; i++) {
+        Write("SubscriberKey: " + clickEvents[i].SubscriberKey + '\n');
+        Write("EventDate: " + clickEvents[i].EventDate + '\n');
+        Write("URL: " + clickEvents[i].URL + '\n');
+      }
+    } else {
+      Write("No Click Events found for the specified SubscriberKey.\n");
+    }
+  }
+
+  try {
+    var subscriberKey = "example@domain.com"; // Replace with your target SubscriberKey
+    var clickEvents = retrieveClickEvents(subscriberKey);
+    displayClickEvents(clickEvents);
+  } catch (ex) {
+    logError("Unexpected error during execution", ex);
+  }
+</script>

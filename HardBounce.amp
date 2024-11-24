@@ -1,0 +1,49 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  function retrieveHardBounceEvents(subscriberKey) {
+    try {
+      var filter = {
+        Property: "SubscriberKey",
+        SimpleOperator: "equals",
+        Value: subscriberKey
+      };
+
+      var results = HardBounce.Retrieve(filter);
+
+      return results;
+    } catch (ex) {
+      logError("Error retrieving Bounce Events for SubscriberKey: " + subscriberKey, ex);
+      return null;
+    }
+  }
+
+  function displayHardBounceEvents(bounceEvents) {
+    if (bounceEvents && bounceEvents.length > 0) {
+      for (var i = 0; i < bounceEvents.length; i++) {
+        if (bounceEvents[i].BounceType === "HardBounce") {
+          Write("SubscriberKey: " + bounceEvents[i].SubscriberKey + '\n');
+          Write("EventDate: " + bounceEvents[i].EventDate + '\n');
+          Write("Reason: " + bounceEvents[i].Reason + '\n');
+        }
+      }
+    } else {
+      Write("No Hard Bounce Events found for the specified SubscriberKey.\n");
+    }
+  }
+
+  try {
+    var subscriberKey = "example@domain.com"; // Replace with your target SubscriberKey
+    var bounceEvents = retrieveHardBounceEvents(subscriberKey);
+    displayHardBounceEvents(bounceEvents);
+  } catch (ex) {
+    logError("Unexpected error during execution", ex);
+  }
+</script>

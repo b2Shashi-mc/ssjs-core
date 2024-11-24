@@ -1,0 +1,69 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  // Load the Core library
+  Platform.Load("Core", "1");
+
+  // Function to retrieve account by CustomerKey
+  function retrieveAccount(customerKey) {
+    try {
+      var account = {
+        QueryAllAccounts: true,
+        Filter: {
+          Property: "CustomerKey",
+          SimpleOperator: "equals",
+          Value: customerKey
+        }
+      };
+
+      // Retrieve account data
+      var results = Account.Retrieve(account);
+
+      // Return results for further processing
+      return results;
+    } catch (ex) {
+      // Log error if retrieval fails
+      LogError("Error retrieving account: " + ex.message, ex);
+      return null;
+    }
+  }
+
+  // Function to format and display account details
+  function displayAccountDetails(accountData) {
+    if (accountData && accountData.length > 0) {
+      // Output formatted account details
+      Write("Account Details:");
+      Write("Name: " + accountData[0].Name + "\n");
+      Write("Address: " + accountData[0].Address + "\n");
+      Write("City: " + accountData[0].City + "\n");
+      Write("Country: " + accountData[0].Country + "\n");
+      Write("Zip: " + accountData[0].Zip + "\n");
+      Write("Business Name: " + accountData[0].BusinessName + "\n");
+      Write("Created Date: " + accountData[0].CreatedDate + "\n");
+      Write("Modified Date: " + accountData[0].ModifiedDate + "\n");
+      Write("Account Type: " + accountData[0].AccountType + "\n");
+      Write("BrandID: " + accountData[0].BrandID + "\n");
+    } else {
+      Write("No account found with the specified CustomerKey.\n");
+    }
+  }
+
+  // Function to log errors for debugging
+  function LogError(message, error) {
+    Write("Error Message: " + message + "\n");
+    Write("Error Description: " + error.description + "\n");
+  }
+
+  // Main execution flow
+  try {
+    // Sample CustomerKey (this can be dynamic or passed as a parameter)
+    var customerKey = "xxxxx-xxxx-xxxx-xxxx-xxxxxx";
+
+    // Retrieve the account data using the CustomerKey
+    var results = retrieveAccount(customerKey);
+
+    // Display the results
+    displayAccountDetails(results);
+  } catch (ex) {
+    // Catch any unexpected errors and log them
+    LogError("Unexpected error: " + ex.message, ex);
+  }
+</script>

@@ -1,0 +1,46 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  function retrieveUnsubscribeEvents(subscriberKey) {
+    try {
+      var filter = {
+        Property: "SubscriberKey",
+        SimpleOperator: "equals",
+        Value: subscriberKey
+      };
+
+      var results = Unsubscribe.Retrieve(filter);
+
+      return results;
+    } catch (ex) {
+      logError("Error retrieving Unsubscribe Events for SubscriberKey: " + subscriberKey, ex);
+      return null;
+    }
+  }
+
+  function displayUnsubscribeEvents(unsubEvents) {
+    if (unsubEvents && unsubEvents.length > 0) {
+      for (var i = 0; i < unsubEvents.length; i++) {
+        Write("SubscriberKey: " + unsubEvents[i].SubscriberKey + '\n');
+        Write("EventDate: " + unsubEvents[i].EventDate + '\n');
+      }
+    } else {
+      Write("No Unsubscribe Events found for the specified SubscriberKey.\n");
+    }
+  }
+
+  try {
+    var subscriberKey = "example@domain.com"; // Replace with your target SubscriberKey
+    var unsubEvents = retrieveUnsubscribeEvents(subscriberKey);
+    displayUnsubscribeEvents(unsubEvents);
+  } catch (ex) {
+    logError("Unexpected error during execution", ex);
+  }
+</script>

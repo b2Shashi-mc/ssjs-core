@@ -1,0 +1,53 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  // Load the Core library with version 1
+  Platform.Load("Core", "1");
+  
+  // Function to log errors
+  function LogError(message, error) {
+    Write("Error Message: " + message + '\n');
+    Write("Error Description: " + error.description + '\n');
+  }
+
+  // Function to retrieve Account User by CustomerKey
+  function retrieveAccountUser(customerKey) {
+    try {
+      var filter = {
+        Property: "CustomerKey",
+        SimpleOperator: "equals",
+        Value: customerKey
+      };
+
+      // Attempt to retrieve the Account User(s)
+      return AccountUser.Retrieve(filter);
+    } catch (ex) {
+      // Log any errors and return null
+      LogError("Error retrieving Account User for CustomerKey: " + customerKey, ex);
+      return null;
+    }
+  }
+
+  // Function to display Account User information
+  function displayAccountUserInfo(accountUserData) {
+    if (accountUserData && accountUserData.length > 0) {
+      Write('Client ID: ' + accountUserData[0].Client.ID + '\n');
+      Write('UserID: ' + accountUserData[0].UserID + '\n');
+    } else {
+      Write("No Account User found for the specified CustomerKey.\n");
+    }
+  }
+
+  // Main execution flow
+  try {
+    // Define the CustomerKey dynamically or statically
+    var customerKey = "68c534ec-20af-438e-b36a-f459cff6642d";
+
+    // Retrieve the Account User based on CustomerKey
+    var accountUser = retrieveAccountUser(customerKey);
+
+    // Display Account User information if retrieved
+    displayAccountUserInfo(accountUser);
+  } catch (ex) {
+    // Handle any unexpected errors
+    LogError("Unexpected error during execution", ex);
+  }
+</script>

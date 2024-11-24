@@ -1,0 +1,66 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  // Function to log errors
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  // Function to retrieve QueryDefinition details by Name or CustomerKey
+  function retrieveQueryDefinition(queryName) {
+    try {
+      var filter = {
+        Property: "Name",
+        SimpleOperator: "equals",
+        Value: queryName
+      };
+
+      // Attempt to retrieve the QueryDefinition(s)
+      var results = QueryDefinition.Retrieve(filter);
+
+      // Return the results if found
+      return results;
+    } catch (ex) {
+      logError("Error retrieving QueryDefinition for Name: " + queryName, ex);
+      return null;
+    }
+  }
+
+  // Function to display QueryDefinition details
+  function displayQueryDefinitionDetails(queryDefinitions) {
+    if (queryDefinitions && queryDefinitions.length > 0) {
+      for (var i = 0; i < queryDefinitions.length; i++) {
+        Write("Query Name: " + queryDefinitions[i].Name + '\n');
+        Write("Description: " + queryDefinitions[i].Description + '\n');
+        Write("CustomerKey: " + queryDefinitions[i].CustomerKey + '\n');
+        Write("QueryText: " + queryDefinitions[i].QueryText + '\n');
+        Write("TargetDataExtension: " + queryDefinitions[i].DataExtensionTarget.Name + '\n');
+        Write("Status: " + queryDefinitions[i].Status + '\n');
+        Write("IsActive: " + queryDefinitions[i].IsActive + '\n');
+        Write("CreatedDate: " + queryDefinitions[i].CreatedDate + '\n');
+        Write("ModifiedDate: " + queryDefinitions[i].ModifiedDate + '\n');
+        Write("-------------------------------\n");
+      }
+    } else {
+      Write("No Query Definition found for the specified Name.\n");
+    }
+  }
+
+  // Main execution flow
+  try {
+    // Define the Query Name (can be static or dynamically provided)
+    var queryName = "Query1"; // Replace with your target Query Definition Name
+
+    // Retrieve Query Definition details
+    var queryDefinitions = retrieveQueryDefinition(queryName);
+
+    // Display Query Definition details if retrieved
+    displayQueryDefinitionDetails(queryDefinitions);
+  } catch (ex) {
+    // Handle any unexpected errors
+    logError("Unexpected error during execution", ex);
+  }
+</script>

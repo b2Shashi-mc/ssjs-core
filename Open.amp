@@ -1,0 +1,46 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  function retrieveOpenEvents(subscriberKey) {
+    try {
+      var filter = {
+        Property: "SubscriberKey",
+        SimpleOperator: "equals",
+        Value: subscriberKey
+      };
+
+      var results = Open.Retrieve(filter);
+
+      return results;
+    } catch (ex) {
+      logError("Error retrieving Open Events for SubscriberKey: " + subscriberKey, ex);
+      return null;
+    }
+  }
+
+  function displayOpenEvents(openEvents) {
+    if (openEvents && openEvents.length > 0) {
+      for (var i = 0; i < openEvents.length; i++) {
+        Write("SubscriberKey: " + openEvents[i].SubscriberKey + '\n');
+        Write("EventDate: " + openEvents[i].EventDate + '\n');
+      }
+    } else {
+      Write("No Open Events found for the specified SubscriberKey.\n");
+    }
+  }
+
+  try {
+    var subscriberKey = "example@domain.com"; // Replace with your target SubscriberKey
+    var openEvents = retrieveOpenEvents(subscriberKey);
+    displayOpenEvents(openEvents);
+  } catch (ex) {
+    logError("Unexpected error during execution", ex);
+  }
+</script>

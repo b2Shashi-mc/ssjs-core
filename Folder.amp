@@ -1,0 +1,64 @@
+<script runat="server" language="JavaScript" executioncontexttype="GET">
+  Platform.Load("Core", "1");
+
+  // Function to log errors
+  function logError(message, error) {
+    Write("Error Message: " + message + '\n');
+    if (error && error.description) {
+      Write("Error Description: " + error.description + '\n');
+    }
+  }
+
+  // Function to retrieve Folder details by Name or ParentID
+  function retrieveFolder(folderName) {
+    try {
+      var filter = {
+        Property: "Name",
+        SimpleOperator: "equals",
+        Value: folderName
+      };
+
+      // Attempt to retrieve the Folder(s)
+      var results = Folder.Retrieve(filter);
+
+      // Return the results if found
+      return results;
+    } catch (ex) {
+      logError("Error retrieving Folder for Name: " + folderName, ex);
+      return null;
+    }
+  }
+
+  // Function to display Folder details
+  function displayFolderDetails(folders) {
+    if (folders && folders.length > 0) {
+      for (var i = 0; i < folders.length; i++) {
+        Write("Name: " + folders[i].Name + '\n');
+        Write("Description: " + folders[i].Description + '\n');
+        Write("ID: " + folders[i].ID + '\n');
+        Write("ParentFolder.ID: " + folders[i].ParentFolder.ID + '\n');
+        Write("ContentType: " + folders[i].ContentType + '\n');
+        Write("CreatedDate: " + folders[i].CreatedDate + '\n');
+        Write("ModifiedDate: " + folders[i].ModifiedDate + '\n');
+        Write("-------------------------------\n");
+      }
+    } else {
+      Write("No Folder found for the specified Name.\n");
+    }
+  }
+
+  // Main execution flow
+  try {
+    // Define the Folder Name or ParentID (can be static or dynamically provided)
+    var folderName = "AMPScript"; // Replace with your target Folder Name
+
+    // Retrieve Folder details
+    var folders = retrieveFolder(folderName);
+
+    // Display Folder details if retrieved
+    displayFolderDetails(folders);
+  } catch (ex) {
+    // Handle any unexpected errors
+    logError("Unexpected error during execution", ex);
+  }
+</script>
