@@ -39,7 +39,7 @@ function selectItem(item, objectName) {
 
 // Function to fetch code from GitHub
 async function fetchCodeFromGitHub(objectName) {
-    const githubUrl = `https://api.github.com/repos/b2Shashi-mc/ampscript-soap-api/contents/${objectName}.amp`;
+    const githubUrl = `https://api.github.com/repos/b2Shashi-mc/ssjs-core/contents/${objectName}.amp`;
     try {
         const response = await fetch(githubUrl, {
             headers: {
